@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:x_flutter/x_flutter.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,10 +29,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  void _getVersion() async {
+    try {
+      Api.instance.request('app.verson');
+    } catch (e) {
+      print("-----------> 에러: $e");
+    }
   }
 
   @override
@@ -55,8 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: _getVersion,
+        tooltip: 'Get Version',
         child: Icon(Icons.add),
       ),
     );
