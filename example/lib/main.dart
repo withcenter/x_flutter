@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:x_flutter/x_flutter.dart';
 
@@ -31,9 +33,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _getVersion() async {
     try {
-      Api.instance.request('app.verson');
+      // 예제: 백엔드 버전 가져오기
+      final res = await Api.instance.time();
+      print('res; ${res.time}');
     } catch (e) {
-      print("-----------> 에러: $e");
+      print("-----------> main.ts 에러: $e");
     }
   }
 
