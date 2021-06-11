@@ -50,12 +50,13 @@ class Api {
       // 성공
       return res.data['response'];
     } on DioError catch (e) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
+      // 백엔드에서 에러 발생.
+      //
+      // 백엔드로 접속이 되었으나 2xx 또는 304 가 아닌 다른 응답 코드가 발생한 경우.
       if (e.response != null) {
         final res = e.response as Response;
-        print(res.data);
-        print(res.headers);
+        print("경고: Dio 에서 이 부분에 에러가 발생하는 경우를 찾지 못하겠다. 에러가 이 부분으로 떨어지면, 디버깅을 해서 처리를 할 것.");
+        throw (res.data);
       } else {
         // Something happened in setting up or sending the request that triggered an Error
         print(e.message);
@@ -74,6 +75,9 @@ class Api {
     }
   }
 
+  // 디버그 URL 출력
+  //
+  // 백엔드로 부터 원하는 결과가 도착하지 않을 때, 실제로 백엔드로 접속할 수 있는 URL 을 Debug console 에 출력한다.
   // ignore: unused_element
   _printDebugUrl(data) {
     Map<String, dynamic> params = {};
