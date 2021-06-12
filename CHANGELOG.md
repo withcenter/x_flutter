@@ -1,5 +1,8 @@
 # Matrix Flutter Change Log
 
+## 0.0.6
+
+* Update user functions
 ## 0.0.5
 
 * fix. sessionId error.

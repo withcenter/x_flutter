@@ -7,9 +7,9 @@ import 'package:x_flutter/src/user.dart';
 class Api {
   final dio = Dio();
 
-  String backendScheme = "https";
-  String backendHost = "main.philov.com";
-  String get url => '$backendScheme://$backendHost/index.php';
+  /// [_serverUrl] 은 [init] 함수에서 초기화 되어야 한다.
+  late final String _serverUrl;
+  String get url => '$_serverUrl/index.php';
 
   String sessionId = '';
   User user = User();
@@ -33,6 +33,10 @@ class Api {
       _ready = true;
       return _instance;
     }
+  }
+
+  init({required String host}) {
+    _serverUrl = host;
   }
 
   // 백엔드에 요청
@@ -78,7 +82,8 @@ class Api {
       // 백엔드로 접속이 되었으나 2xx 또는 304 가 아닌 다른 응답 코드가 발생한 경우.
       if (e.response != null) {
         final res = e.response as Response;
-        print("경고: Dio 에서 이 부분에 에러가 발생하는 경우를 찾지 못하겠다. 에러가 이 부분으로 떨어지면, 디버깅을 해서 처리를 할 것.");
+        print(
+            "경고: Dio 에서 이 부분에 에러가 발생하는 경우를 찾지 못하겠다. 에러가 이 부분으로 떨어지면, 디버깅을 해서 처리를 할 것.");
         throw (res.data);
       } else {
         // Something happened in setting up or sending the request that triggered an Error
@@ -86,7 +91,7 @@ class Api {
 
         // 백엔드 호스트 오류. 접속 불가.
         if (e.message.indexOf('Failed host lookup') > -1) {
-          throw "백엔드 호스트 - $backendHost - 에 접속 할 수 없습니다. 호스트가 올바른지 확인을 해 주세요.";
+          throw "백엔드 - $url - 에 접속 할 수 없습니다. 호스트가 올바른지 확인을 해 주세요.";
         } else if (e.message.indexOf('CERTIFICATE_VERIFY_FAILED') > -1) {
           throw "백엔드 호스트 접속시 인증서 오류가 발생하였습니다. HTTP 또는 HTTPS 접속인지 확인을 해 주세요.\nCERTIFICATE_VERIFY_FAILED: application verification failure";
         }
@@ -111,7 +116,8 @@ class Api {
 
     try {
       String queryString = Uri(queryParameters: params).query;
-      debugPrint("Restful Api Error URL ==>> $url?$queryString", wrapWidth: 1024);
+      debugPrint("Restful Api Error URL ==>> $url?$queryString",
+          wrapWidth: 1024);
     } catch (e) {
       print("==> Caught error on _printDebug() with data: ");
       print(data);

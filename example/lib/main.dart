@@ -114,7 +114,9 @@ class App extends GetxController {
       builder: (_) => AlertDialog(
         title: Text(title),
         content: Text(content),
-        actions: [TextButton(onPressed: () => Get.back(result: true), child: Text('확인'))],
+        actions: [
+          TextButton(onPressed: () => Get.back(result: true), child: Text('확인'))
+        ],
       ),
     );
   }
@@ -201,7 +203,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               if (_.notLoggedIn) Text('Login'),
               if (_.loggedIn) Text('회원 이름: ${_.user.name}'),
-              if (_.loggedIn) ElevatedButton(onPressed: _.logout, child: Text('로그아웃')),
+              if (_.loggedIn)
+                ElevatedButton(onPressed: _.logout, child: Text('로그아웃')),
               if (_.loggedIn) Profile(),
             ],
           ),
@@ -246,7 +249,8 @@ class Login extends StatelessWidget {
                 SizedBox(height: 16),
                 ElevatedButton(
                     onPressed: () async {
-                      app.login({'email': email.text, 'password': password.text});
+                      app.login(
+                          {'email': email.text, 'password': password.text});
                     },
                     child: Text('회원 로그인'))
               ],
@@ -296,7 +300,11 @@ class Register extends StatelessWidget {
                 SizedBox(height: 16),
                 ElevatedButton(
                     onPressed: () async {
-                      app.register({'email': email.text, 'password': password.text, 'name': name.text});
+                      app.register({
+                        'email': email.text,
+                        'password': password.text,
+                        'name': name.text
+                      });
                     },
                     child: Text('회원 가입'))
               ],
@@ -345,7 +353,8 @@ class Profile extends StatelessWidget {
                 SizedBox(height: 16),
                 ElevatedButton(
                     onPressed: () async {
-                      app.profileUpdate({'name': name.text, 'address': address.text});
+                      app.profileUpdate(
+                          {'name': name.text, 'address': address.text});
                     },
                     child: Text('회원 정보 수정'))
               ],
