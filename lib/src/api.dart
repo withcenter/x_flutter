@@ -45,10 +45,9 @@ class Api {
   // print('version: ${res['version']}');
   // ```
   Future request(String route, [Map<String, dynamic>? data]) async {
-    assert(sessionId != '', "앗, 사용자 세션 아이디가 지정되지 않았습니다.");
     if (data == null) data = {};
     data['route'] = route;
-    data['sessionId'] = sessionId;
+    if (sessionId != '') data['sessionId'] = sessionId;
     try {
       final res = await dio.post(
         url,

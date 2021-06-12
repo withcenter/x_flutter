@@ -29,6 +29,7 @@ class User {
   /// 참고, 현재 로그인한 사용자의 프로필을 가져온다. 만약, [api.sessionId] 에 사용자 세션 정보가 없으면 에러가 난다.
   /// 그래서, 이 함수를 호출 하기 전에 [api.sessionId] 에 값을 넣어 주어야 한다.
   Future profile() {
+    assert(api.sessionId != '', "앗, 사용자 세션 아이디가 지정되지 않았습니다.");
     return api.request('user.profile').then((json) => UserModel.fromJson(json));
   }
 

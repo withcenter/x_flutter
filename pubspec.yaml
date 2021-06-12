@@ -1,6 +1,6 @@
 name: x_flutter
 description: Matrix Restful Api Flutter Package. You can build user, forum, social, chat, any other apps with Matrix.
-version: 0.0.4
+version: 0.0.5
 homepage: https://github.com/withcenter/x_flutter
 repository: https://github.com/withcenter/x_flutter
 
