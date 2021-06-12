@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:x_flutter/models/time.dart';
-import 'package:x_flutter/models/version.dart';
+import 'package:x_flutter/models/time.model.dart';
+import 'package:x_flutter/models/version.model.dart';
+import 'package:x_flutter/src/user.dart';
 
 class Api {
   final dio = Dio();
@@ -10,13 +11,28 @@ class Api {
   String backendHost = "main.philov.com";
   String get url => '$backendScheme://$backendHost/index.php';
 
-  /// Api Singleton
-  static Api? _instance;
+  String sessionId = '';
+  User user = User();
+
+  // Api Singleton
+  // Null safety 를 위해서, 물음표(?)를 쓰지 않고, 사용하기 위해 _ready 변수 추가.
+  static late Api _instance;
+  static bool _ready = false;
+  // Api instance 를 리턴
+  // ```dart
+  // print('user: ${Api.instance.user.runtimeType}');
+  // print('user: ${Api.instance.user.runtimeType}');
+  // print('user: ${Api.instance.user.runtimeType}');
+  // ```
   static Api get instance {
-    if (_instance == null) {
+    if (_ready) {
+      return _instance;
+    } else {
       _instance = Api();
+      _instance.user.api = _instance;
+      _ready = true;
+      return _instance;
     }
-    return _instance!;
   }
 
   // 백엔드에 요청
@@ -29,8 +45,10 @@ class Api {
   // print('version: ${res['version']}');
   // ```
   Future request(String route, [Map<String, dynamic>? data]) async {
+    assert(sessionId != '', "앗, 사용자 세션 아이디가 지정되지 않았습니다.");
     if (data == null) data = {};
     data['route'] = route;
+    data['sessionId'] = sessionId;
     try {
       final res = await dio.post(
         url,
@@ -39,24 +57,29 @@ class Api {
           // print('sent: $sent total: $total');
         },
       );
+      if (res.data == null) {
+        throw ("백엔드 결과 값이 null 입니다.");
+      }
       if (res.data is String) {
         print(res);
         throw "벡엔드로 부터 결과 값을 받았으나, 그 결과 값이 올바르지 않습니다. 접속 주소가 올바른지, 백엔드로 요청한 값이 올바른지, 백엔드 프로그램에 에러가 있는지 확인을 해 주세요.";
+      }
+      if (res.data['response'] == null) {
+        throw ("백엔드의 결과 데이터가 null 입니다.");
       }
       if (res.data['response'] is String) {
         throw res.data['response'];
       }
 
       // 성공
-      return res.data['response'];
+      return res.data['response'] as Map<String, dynamic>;
     } on DioError catch (e) {
       // 백엔드에서 에러 발생.
       //
       // 백엔드로 접속이 되었으나 2xx 또는 304 가 아닌 다른 응답 코드가 발생한 경우.
       if (e.response != null) {
         final res = e.response as Response;
-        print(
-            "경고: Dio 에서 이 부분에 에러가 발생하는 경우를 찾지 못하겠다. 에러가 이 부분으로 떨어지면, 디버깅을 해서 처리를 할 것.");
+        print("경고: Dio 에서 이 부분에 에러가 발생하는 경우를 찾지 못하겠다. 에러가 이 부분으로 떨어지면, 디버깅을 해서 처리를 할 것.");
         throw (res.data);
       } else {
         // Something happened in setting up or sending the request that triggered an Error
@@ -89,7 +112,7 @@ class Api {
 
     try {
       String queryString = Uri(queryParameters: params).query;
-      debugPrint("==>> $url?$queryString", wrapWidth: 1024);
+      debugPrint("Restful Api Error URL ==>> $url?$queryString", wrapWidth: 1024);
     } catch (e) {
       print("==> Caught error on _printDebug() with data: ");
       print(data);
@@ -100,8 +123,8 @@ class Api {
   // ```
   // print('버전: ' + (await Api.instance.version()).version);
   // ```
-  Future<Version> version() async {
-    return Version.fromJson(await this.request('app.version'));
+  Future<VersionModel> version() async {
+    return VersionModel.fromJson(await this.request('app.version'));
   }
 
   // 백엔드 서버의 시간을 가져온다.
@@ -109,7 +132,7 @@ class Api {
   // final res = await Api.instance.time();
   // print('res; ${res.time}');
   // ```
-  Future<Time> time() async {
-    return Time.fromJson(await this.request('app.time'));
+  Future<TimeModel> time() async {
+    return TimeModel.fromJson(await this.request('app.time'));
   }
 }

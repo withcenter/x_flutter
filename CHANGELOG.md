@@ -1,5 +1,9 @@
 # Matrix Flutter Change Log
 
+## 0.0.4
+
+* Adding user functionalities.
+
 ## 0.0.3
 
 * Error handling on connection to backend.

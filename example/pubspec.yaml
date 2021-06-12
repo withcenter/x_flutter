@@ -14,8 +14,13 @@ dependencies:
 
   cupertino_icons: ^1.0.2
 
+  get: ^4.1.4
+
+  get_storage: ^2.0.2
+
   x_flutter:
     path: ..
+
 
 dev_dependencies:
   flutter_test:
