@@ -7,6 +7,7 @@ import './spinner.dart';
 /// 이미지를 캐시해서 보기
 ///
 /// 사진을 화면에 가득 채워 나타내려면, `width: double.infinity, height: null` 로 입력하면 된다.
+/// 참고, x_flutter 의 것은 외부에서 사용 불가. 대신, widgets 패키지의 것을 사용.
 class CacheImage extends StatelessWidget {
   CacheImage(
     this.url, {
